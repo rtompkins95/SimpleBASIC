@@ -1,0 +1,1 @@
+beginning: PRINT "Hello!"
