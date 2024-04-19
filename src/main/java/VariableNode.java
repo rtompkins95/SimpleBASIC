@@ -17,6 +17,9 @@ public class VariableNode extends StatementNode {
         }
     }
 
+    @Override
+    public void accept(StatementVisitor visitor) {}
+
     public String getName() {
         return name;
     }
@@ -41,10 +44,5 @@ public class VariableNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
-
     }
 }

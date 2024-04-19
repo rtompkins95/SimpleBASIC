@@ -1,14 +1,11 @@
 import java.util.Objects;
 
 public class MathOpNode extends Node {
-
-
     public enum OPERATION {
         ADD, SUBTRACT, MULTIPLY, DIVIDE
     }
 
     private final Node left;
-
     private final Node right;
 
     private final OPERATION operation;

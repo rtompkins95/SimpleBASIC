@@ -28,12 +28,10 @@ public class Interpreter {
         this.statementVisitor = new StatementVisitorImpl();
     }
 
-    // Sets the test mode
     public void setTestMode(boolean testMode) {
         this.testMode = testMode;
     }
 
-    // Sets the input
     public void setTestInput(List<String> input) {
         this.testInput = new ArrayList<>(input);
     }
@@ -42,12 +40,10 @@ public class Interpreter {
         return this.testInput;
     }
 
-    // Gets the output
     public List<String> getOutput() {
         return output;
     }
 
-    // Visits the statements in the program
     private void visitStatements() {
         List<StatementNode> statements = programNode.getStatements();
         StatementNode prev = null;
@@ -89,13 +85,10 @@ public class Interpreter {
         if (statement instanceof AssignmentNode) {
             return assignment((AssignmentNode) statement);
         } else if (statement instanceof ReadNode) {
-            // read data from the data queue and assign it to variables
             return read((ReadNode) statement);
         } else if (statement instanceof InputNode) {
-            // read data from the data queue and assign it to variables
             return input((InputNode) statement);
         } else if (statement instanceof PrintNode) {
-            // read data from the data queue and assign it to variables
             return print((PrintNode) statement);
         } else if (statement instanceof IfNode) {
             return ifStatement((IfNode) statement);
@@ -120,7 +113,6 @@ public class Interpreter {
         return new EndNode();
     }
 
-    // Evaluates assignment statements and assigns the value to the variable
     private StatementNode assignment(AssignmentNode assignmentNode) {
         String name = assignmentNode.getVariableNode().getName();
         Object value = evaluate(assignmentNode.getValue());
@@ -179,7 +171,6 @@ public class Interpreter {
         return inputNode.getNext();
     }
 
-    // Reads and removes from internal collection. Updates variable(s)
     private StatementNode read(ReadNode readNode) {
         for (VariableNode variableNode: readNode.getVariables()) {
             if (dataQueue.isEmpty()) {
@@ -203,9 +194,8 @@ public class Interpreter {
         return readNode.getNext();
     }
 
-    // Prints each data item in the PrintNode
     public StatementNode print(PrintNode printNode) {
-        for (Node arg: printNode.getArguments()) {
+        for (Node arg: printNode.getParameters()) {
             if (testMode) {
                 output.add(evaluate(arg).toString());
             } else {
@@ -298,7 +288,6 @@ public class Interpreter {
             return stack.pop();
         }
 
-        // TODO this should maybe throw an error
         StatementNode statementNode = labeledStatementNode.getStatementNode();
         if (statementNode == null) {
             return labeledStatementNode.getNext();
@@ -311,6 +300,23 @@ public class Interpreter {
     }
 
     private StatementNode nextStatement(NextNode nextNode) {
+        if (stack.empty()) {
+            throw new RuntimeException("NEXT statement must have matching FOR loop declaration");
+        }
+        if (nextNode.getVariable() == null) {
+            throw new RuntimeException("NEXT statement must reference the iterator in a matching FOR loop declaration");
+        }
+
+        StatementNode forNode = stack.peek();
+        if (!(forNode instanceof ForNode)) {
+            throw new RuntimeException("NEXT statement must have matching FOR loop declaration");
+        }
+
+        String forNodeVariable = ((ForNode) forNode).getVariable().getName();
+        String nextNodeVariable = nextNode.getVariable().getName();
+        if (!forNodeVariable.equals(nextNodeVariable)) {
+            throw new RuntimeException(String.format("'NEXT %s' does not match FOR loop iterator: '%s'", nextNodeVariable, forNodeVariable));
+        }
         return stack.pop();
     }
 
@@ -371,7 +377,6 @@ public class Interpreter {
         return curr.getNext();
     }
 
-    // Evaluates the node and returns the value
     private Object evaluate(Node node) {
 
         if (node instanceof IntegerNode) {
@@ -533,5 +538,4 @@ public class Interpreter {
     public Queue<Node> getDataQueue() {
         return dataQueue;
     }
-
 }

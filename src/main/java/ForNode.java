@@ -1,10 +1,10 @@
 import java.util.Objects;
 
 public class ForNode extends StatementNode {
-    private VariableNode variable;
-    private Node initialValue;
-    private Node limit;
-    private Node increment;
+    private final VariableNode variable;
+    private final Node initialValue;
+    private final Node limit;
+    private final Node increment;
 
     public ForNode(VariableNode variable, Node initialValue, Node limit, Node increment) {
         this.variable = variable;
@@ -12,6 +12,9 @@ public class ForNode extends StatementNode {
         this.limit = limit;
         this.increment = increment;
     }
+
+    @Override
+    public void accept(StatementVisitor visitor) {}
 
     public VariableNode getVariable() {
         return variable;
@@ -48,9 +51,5 @@ public class ForNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(variable, initialValue, limit, increment);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
     }
 }

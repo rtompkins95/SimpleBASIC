@@ -9,6 +9,11 @@ public class WhileNode extends StatementNode {
         this.label = label;
     }
 
+    @Override
+    public void accept(StatementVisitor visitor) {
+        visitor.visit(this);
+    }
+
     public BooleanExpressionNode getCondition() {
         return condition;
     }
@@ -33,10 +38,5 @@ public class WhileNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(condition, label);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
-        visitor.visit(this);
     }
 }

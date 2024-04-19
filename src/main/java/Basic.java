@@ -5,8 +5,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * The Basic class is the entry point for the lexer program. It processes
- * a file to tokenize its content and prints out the tokens.
+ * Takes an input file and interprets a SimpleBASIC program or runs the shell in interactive mode
  */
 public class Basic {
 
@@ -74,7 +73,9 @@ public class Basic {
         String input;
         while (true) {
             System.out.print(">>> ");
+
             input = scanner.nextLine();
+
             if (input.equalsIgnoreCase("RUN")) {
                 runProgram(program);
             } else if (input.equalsIgnoreCase("HELP")) {

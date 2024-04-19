@@ -1,6 +1,5 @@
 import java.util.Objects;
 
-
 public class TermNode extends Node {
     private final Node node;
 

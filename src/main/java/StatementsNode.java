@@ -8,10 +8,6 @@ public class StatementsNode extends Node {
 
     public StatementsNode() {}
 
-    public StatementsNode(List<StatementNode> statements) {
-        this.statements = statements;
-    }
-
     public void addStatement(StatementNode node) {
         statements.add(node);
     }
@@ -24,7 +20,6 @@ public class StatementsNode extends Node {
     public String toString() {
         return String.format("StatementsNode(%s)", statements);
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This method is responsible for parsing an assignment statement from the token stream.
- * It first calls the factor() method to parse a variable name.
- * If the next token is an EQUALS token, it calls the expression() method to parse the expression to be assigned to the variable.
- * If the next token is not an EQUALS token, it returns null.
+ * This class parses a list of tokens and outputs a ProgramNode with a list of Statements representing the abstract syntax tree
+ *   for SimpleBASIC
  *
- * @return An AssignmentNode representing the parsed assignment statement, or null if the next token is not an EQUALS token.
+ * @return ProgramNode
  */
 public class Parser {
     /**
@@ -54,9 +52,8 @@ public class Parser {
         return program;
     }
 
-
     /**
-     * This method is responsible for parsing expressions from the token stream.
+     * Parses expressions from the token stream.
      * It creates a new ProgramNode and then repeatedly calls the expression() method to parse individual expressions.
      * It continues parsing expressions as long as there are more tokens and the next token is a separator (i.e., an ENDOFLINE token).
      *
@@ -71,12 +68,10 @@ public class Parser {
     }
 
     /**
-    * This method is responsible for parsing statements from the token stream.
-    * It creates a new StatementsNode and then repeatedly calls the statement() method to parse individual statements.
-    * It continues parsing statements as long as there are more tokens and the next token is a separator (i.e., an ENDOFLINE token).
+    * Parses all statements from the token stream.
     * If the statement() method returns null, it stops parsing and returns the StatementsNode.
     *
-    * @return A StatementsNode representing the parsed statements.
+    * @return A StatementsNode representing all parsed statements.
     */
     public StatementsNode statements() {
         StatementsNode statements = new StatementsNode();
@@ -89,8 +84,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing a statement from the token stream.
-     *
+     * Parses a statement from the token stream.
      * It checks the type of the next token and calls the corresponding method to parse and create the corresponding statement node.
      * If the next token does not match any statement type, it returns null.
      *
@@ -105,7 +99,6 @@ public class Parser {
 
             // This label is used in a while statement and has no statement after colon
             if (peekAndMatch(Token.TokenType.ENDOFLINE)) {
-                // TODO make an EndWhile node
                 return new LabeledStatementNode(label, null);
             }
 
@@ -132,7 +125,6 @@ public class Parser {
         } else if (peekAndMatch(Token.TokenType.NEXT)) {
             return nextStatement();
         } else if (peekAndMatch(Token.TokenType.ENDOFLINE)) {
-            // TEST WITH A FILE
             tokenManager.matchAndRemove(Token.TokenType.ENDOFLINE);
             return null;
         } else if (peekAndMatch(Token.TokenType.IF)) {
@@ -147,8 +139,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing a while statement from the token stream.
-     *
+     * Parses a while statement from the token stream.
      * The method follows these steps:
      * 1. Checks if the next token is a WHILE token. If it is not, it throws an IllegalArgumentException.
      * 2. Calls the booleanExpression() method to parse the condition of the while statement.
@@ -178,8 +169,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing an end statement from the token stream.
-     *
+     * Parses an end statement from the token stream.
      * The method follows these steps:
      * 1. Checks if the next token is an END token. If it is not, it throws an IllegalArgumentException.
      * 2. Creates a new EndNode and returns it.
@@ -196,8 +186,7 @@ public class Parser {
 
 
     /**
-     * This method is responsible for parsing an if statement from the token stream.
-     *
+     * Parses an if statement from the token stream.
      * The method follows these steps:
      * 1. Checks if the next token is an IF token. If it is not, it throws an IllegalArgumentException.
      * 2. Calls the booleanExpression() method to parse the condition of the if statement.
@@ -264,7 +253,7 @@ public class Parser {
     }
 
     /**
-     * Executes a for loop statement.
+     * Parses a for loop statement.
      *
      * @return The constructed ForNode representing the for loop.
      * @throws IllegalArgumentException if a number is not found after "STEP" keyword.
@@ -320,7 +309,7 @@ public class Parser {
     }
 
     /**
-     * Executes a GOSUB statement by matching and removing the GOSUB token, and then
+     * Parses a GOSUB statement by matching and removing the GOSUB token, and then
      * parsing the label identifier. If the label identifier is not found, an
      * IllegalArgumentException is thrown.
      *
@@ -339,7 +328,7 @@ public class Parser {
     }
 
     /**
-     * This method is used to generate a return statement node.
+     * Parses a return statement node.
      * The return command is used with a matching gosub command, to return program
      *   flow back to the main program at the end of the sub procedure.
      * If a return command is used without a matching gosub beforehand, the program flow will crash.
@@ -358,7 +347,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing an input statement from the token stream.
+     * Parses an input statement from the token stream.
      * It first checks if the next token is an INPUT token. If it is, it creates a new InputNode.
      * It then calls the factor() method to parse a list of variables to be input and adds the returned variables to the InputNode.
      * Finally, it returns the InputNode.
@@ -397,7 +386,7 @@ public class Parser {
 
 
     /**
-     * This method is responsible for parsing a read statement from the token stream.
+     * Parses a read statement from the token stream.
      * It first checks if the next token is a READ token. If it is, it creates a new ReadNode.
      * It then calls the factor() method to parse a list of variables to be read and adds the returned variables to the ReadNode.
      * Finally, it returns the ReadNode.
@@ -421,7 +410,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing a data statement from the token stream.
+     * Parses a data statement from the token stream.
      * It first checks if the next token is a DATA token. If it is, it creates a new DataNode.
      * It then calls the expression() method to parse a list of data values and adds the returned values to the DataNode.
      * Finally, it returns the DataNode.
@@ -435,7 +424,8 @@ public class Parser {
         List<Node> data = new ArrayList<>();
         do {
             Node node = factor();
-            //Unwrap the FactorNode to get the actual inner node
+
+            // Unwrap the FactorNode to get the actual inner node
             if (node instanceof FactorNode) {
                 node = ((FactorNode) node).getNode();
             }
@@ -449,7 +439,7 @@ public class Parser {
     }
 
     /**
-     * This method is responsible for parsing a print statement from the token stream.
+     * Parses a print statement from the token stream.
      * It first checks if the next token is a PRINT token. If it is, it creates a new PrintNode.
      * It then calls the printList() method to parse a list of nodes to be printed and adds the returned nodes to the PrintNode.
      * Finally, it returns the PrintNode.
@@ -467,12 +457,11 @@ public class Parser {
         for (Node node : nodes) {
             printNode.addNode(node);
         }
-
         return printNode;
     }
 
 /**
-     * This method is responsible for parsing a list of nodes to be printed from the token stream.
+     * Parses a list of nodes to be printed from the token stream.
      * It creates a new list of nodes and repeatedly calls the expression() method to parse individual nodes.
      * It continues parsing nodes as long as there are more tokens and the next token is not an ENDOFLINE token.
      *
@@ -496,7 +485,7 @@ public List<Node> printList() {
 }
 
     /**
-     * This method is responsible for parsing an assignment statement from the token stream.
+     * Parses an assignment statement from the token stream.
      * It first calls the factor() method to parse a variable name.
      * If the next token is an EQUALS token, it calls the expression() method to parse the expression to be assigned to the variable.
      * If the next token is not an EQUALS token, it returns null.
@@ -512,34 +501,13 @@ public List<Node> printList() {
     }
 
     /**
-     * This method is responsible for parsing an expression from the token stream.
-     * It first checks if the next token is a function name. If it is, it calls the functionInvocation() method to parse the function invocation.
-     * If the next token is not a function name, it calls the term() method to parse a term.
-     * It then enters a loop where it checks if the next token is a PLUS or MINUS token. If it is, it creates a new MathOpNode with the parsed term and the term parsed from the next call to the term() method.
-     * The loop continues until the next token is not a PLUS or MINUS token.
-     * Finally, it returns a new ExpressionNode with the parsed term.
+     * Parses an expression according to the grammar:
      *
-     * @return An ExpressionNode representing the parsed expression.
+     * Expression: TERM {+|- TERM} | functionInvocation
+     * Term: FACTOR {*|/ FACTOR}
+     * Factor: number | ( EXPRESSION )
+     * @return an ExpressionNode
      */
-//    public Node expression() {
-//        if (peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
-//            return functionInvocation();
-//        }
-//        Node term = term();
-//        while (true) {
-//            if (matchAndRemove(Token.TokenType.PLUS)) {
-//                term = new MathOpNode(MathOpNode.OPERATION.ADD, term, term());
-//            } else if (matchAndRemove(Token.TokenType.MINUS)) {
-//                term = new MathOpNode(MathOpNode.OPERATION.SUBTRACT, term, term());
-//            } else {
-//                break;
-//            }
-//        }
-//        return new ExpressionNode(term);
-//    }
-
-
-    // TODO I just made this new version of expression below trying to figure out how to solve the issue
     public Node expression() {
         Node term;
         if (peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
@@ -565,7 +533,7 @@ public List<Node> printList() {
 
 
     /**
-     * Parses and constructs a FunctionNode by invoking a function.
+     * Parses and constructs a FunctionNode representing a built-in function
      *
      * @return the constructed FunctionNode with the parsed function name and parameters,
      *         or null if the next token is not a function name
@@ -614,6 +582,7 @@ public List<Node> printList() {
     /**
      * Parses and generates a TermNode from the given tokens. A TermNode represents a term in the grammar.
      * It evaluates the input tokens and creates a binary expression tree.
+     *
      *
      * @return The TermNode representing the root of the term tree.
      */

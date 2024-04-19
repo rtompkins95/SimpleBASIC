@@ -1,9 +1,12 @@
 public class NextNode extends StatementNode {
-    private VariableNode variable;
+    private final VariableNode variable;
 
     public NextNode(VariableNode variable) {
         this.variable = variable;
     }
+
+    @Override
+    public void accept(StatementVisitor visitor) {}
 
     public VariableNode getVariable() {
         return variable;
@@ -12,9 +15,5 @@ public class NextNode extends StatementNode {
     @Override
     public String toString() {
         return String.format("NextNode(variable=%s)", variable);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
     }
 }

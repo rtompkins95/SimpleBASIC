@@ -13,23 +13,27 @@ public class Token {
      * Each type represents a distinct category of token found in the source code.
      */
     public enum TokenType {
-        WORD, NUMBER, IF, PRINT, READ, INPUT, DATA, GOSUB, GOTO, FOR, TO, STEP, NEXT, RETURN, THEN, FUNCTION, WHILE,
+        WORD, NUMBER, IF, PRINT, READ, INPUT, DATA, GOSUB, GOTO, FOR, TO, STEP, NEXT, RETURN, THEN, WHILE,
         END, ENDOFLINE, STRINGLITERAL, GREATERTHANEQUALTO, LESSTHANEQUALTO, NOTEQUALS, EQUALS, LESSTHAN, GREATERTHAN,
         LPAREN, RPAREN, PLUS, MINUS, MULTIPLY, DIVIDE, LABEL, COMMA, FUNCTIONNAME
     }
+
     /**
      * Represents a single token in the source code.
      * Each token has a specific type, line number, and position.
      */
     private final TokenType tokenType; // as defined in TokenType enum.
+
     /**
      * Represents a token in the source code.
      */
     private String val; // Value of the token. It can be null for tokens where value is not applicable, like ENDOFLINE.
+
     /**
      * Represents line number of token.
      */
     private final int lineNo; // Line number in the source code where the token is located.
+
     /**
      * Represents the position within its line of a token, as an index.
      * The position indicates the location of the token within a line of source code.
@@ -54,9 +58,14 @@ public class Token {
         this.val = val;
     }
 
-    /** Returns a string representation of the Token object.
-    * The format is "TokenType" or "TokenType(Value)" if there is a value inside the token.
-    */
+    public TokenType getTokenType() {
+        return this.tokenType;
+    }
+
+    public String getVal() {
+        return this.val;
+    }
+
     @Override
     public String toString() {
         if (val != null) {
@@ -66,24 +75,6 @@ public class Token {
         }
     }
 
-    /**
-     * Verbose output for testing
-     * @return
-     */
-    public String toString2Debug() {
-        if (val != null) {
-            return String.format("%s(%s) Line: %d Position: %d", tokenType, val, lineNo, position);
-        } else {
-            return String.format("%s Line: %d Position: %d", tokenType, lineNo, position);
-        }
-    }
-
-    /**
-     * Compares this Token object with the specified object for equality.
-     *
-     * @param o the object to be compared for equality with this Token
-     * @return {@code true} if the specified object is equal to this Token, {@code false} otherwise
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,35 +86,10 @@ public class Token {
                 Objects.equals(val, token.val);
     }
 
-    /**
-     * Overrides the hashCode method from the Object class.
-     * Returns a hash code value for the Token object.
-     *
-     * @return the hash code value for the Token object
-     */
     @Override
     public int hashCode() {
         return Objects.hash(tokenType, val, lineNo, position);
     }
-
-    // Getter for TokenType
-    // Return the token's type
-    public TokenType getTokenType() {
-        return this.tokenType;
-    }
-    // Getter for position, returns tokens position
-    public int getPosition() {
-        return this.position;
-    }
-    // Getter for line number, returns tokens line number
-    public int getLineNo() {
-        return this.lineNo;
-    }
-
-    public String getVal() {
-        return this.val;
-    }
-
 }
 
 

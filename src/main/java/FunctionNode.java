@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FunctionNode extends Node {
-    private String functionName;
+    private final String functionName;
     private List<Node> parameters;
 
     public FunctionNode(String functionName) {
@@ -41,5 +41,4 @@ public class FunctionNode extends Node {
     public int hashCode() {
         return Objects.hash(functionName, parameters);
     }
-
 }

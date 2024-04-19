@@ -9,6 +9,9 @@ public class ReadNode extends StatementNode {
     }
 
     @Override
+    public void accept(StatementVisitor visitor) {}
+
+    @Override
     public String toString() {
         return String.format("ReadNode(%s)", variables);
     }
@@ -28,9 +31,5 @@ public class ReadNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(variables);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
     }
 }

@@ -4,23 +4,18 @@ import java.util.Objects;
 public class InputNode extends StatementNode {
 
     private StringNode promptNode;
-    private List<VariableNode> variables;
-
-    public InputNode(StringNode promptNode) {
-        this.promptNode = promptNode;
-    }
+    private final List<VariableNode> variables;
 
     public InputNode(StringNode promptNode, List<VariableNode> variables) {
         this.promptNode = promptNode;
         this.variables = variables;
     }
 
+    @Override
+    public void accept(StatementVisitor visitor) {}
+
     public StringNode getPrompt() {
         return this.promptNode;
-    }
-
-    public void setVariables(List<VariableNode> variableNodes) {
-        this.variables = variableNodes;
     }
 
     public List<VariableNode> getVariables() {
@@ -44,8 +39,5 @@ public class InputNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(variables);
-    }
-    @Override
-    public void accept(StatementVisitor visitor) {
     }
 }

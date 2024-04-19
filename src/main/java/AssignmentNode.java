@@ -12,6 +12,11 @@ public class AssignmentNode extends StatementNode {
     }
 
     @Override
+    public void accept(StatementVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
     public String toString() {
         return String.format("AssignmentNode(%s = %s)", variableNode, value);
     }
@@ -35,10 +40,5 @@ public class AssignmentNode extends StatementNode {
 
     public Node getValue() {
         return value;
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
-        visitor.visit(this);
     }
 }

@@ -41,7 +41,6 @@ public class ProgramNode extends Node {
                 "}";
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,8 +2,8 @@ import java.util.LinkedList;
 import java.util.Optional;
 public class TokenManager {
 
-    private LinkedList<Token> tokens;
-    private int currentTokenIndex;
+    private final LinkedList<Token> tokens;
+    private final int currentTokenIndex;
 
     public TokenManager(LinkedList<Token> tokens) {
         this.tokens = tokens;
@@ -26,7 +26,6 @@ public class TokenManager {
         }
     }
 
-
     /**
      * Checks if there are more tokens to be processed.
      *
@@ -36,14 +35,13 @@ public class TokenManager {
         return currentTokenIndex < tokens.size();
     }
 
-
     /**
      * Matches the first token in the list and removes it if it has the specified token type.
      *
      * @param t the TokenType to match
      * @return an Optional containing the token if it matches and is removed, or an empty Optional otherwise
      */
-    Optional<Token> matchAndRemove(Token.TokenType t) {
+    public Optional<Token> matchAndRemove(Token.TokenType t) {
         if (tokens.isEmpty()) {
             return Optional.empty();
         }

@@ -1,20 +1,23 @@
 import java.util.Objects;
 
 public class LabeledStatementNode extends StatementNode {
-    private String label;
-    private StatementNode statementNode;
+    private final String label;
+    private final StatementNode statementNode;
 
     public LabeledStatementNode(String label, StatementNode statementNode) {
         this.label = label;
         this.statementNode = statementNode;
     }
 
-    // Getter method for label
+    @Override
+    public void accept(StatementVisitor visitor) {
+        visitor.visit(this);
+    }
+
     public String getLabel() {
         return this.label;
     }
 
-    // Getter method for statementNode
     public StatementNode getStatementNode() {
         return this.statementNode;
     }
@@ -35,10 +38,5 @@ public class LabeledStatementNode extends StatementNode {
     @Override
     public int hashCode() {
         return Objects.hash(label, statementNode);
-    }
-
-    @Override
-    public void accept(StatementVisitor visitor) {
-        visitor.visit(this);
     }
 }
