@@ -1,6 +1,0 @@
-x = 4
-y = 5
-IF x <= y THEN myLabel
-PRINT "should not execute"
-myLabel: PRINT "myLabel"
-END
