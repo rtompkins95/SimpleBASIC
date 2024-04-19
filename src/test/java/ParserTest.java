@@ -38,13 +38,6 @@ public class ParserTest {
         return new Parser(lexTokens(text)).parse();
     }
 
-    private ProgramNode parseProgram(String text) {
-        Lexer lexer = new Lexer();
-        LinkedList<Token> tokens = lexer.lex(text);
-        Parser parser = new Parser(tokens);
-        return parser.parse();
-    }
-
     private ExpressionNode negate(ExpressionNode expression) {
         return new ExpressionNode(
                 new TermNode(
@@ -65,7 +58,6 @@ public class ParserTest {
         ProgramNode expectedProgram = new ProgramNode();
         expectedProgram.addExpression(expectedExpression);
 
-        System.out.println(expectedProgram);
         assertEquals(expectedProgram, testProgram);
     }
 
@@ -100,7 +92,6 @@ public class ParserTest {
         ProgramNode expectedProgram = new ProgramNode();
         expectedProgram.addExpression(expectedExpression);
 
-        System.out.println(testProgram);
         assertEquals(expectedProgram, testProgram);
     }
 
@@ -124,7 +115,6 @@ public class ParserTest {
     @Test
     public void testExpressionAddThreeTerms() throws IOException {
         ProgramNode program =  parseExpressions("1+2+3");
-        System.out.println(program);
     }
 
     @Test
@@ -323,7 +313,6 @@ public class ParserTest {
      * 2 * 2 + 4
      * 4 / (2 + 2)
      * 5 - -(4 * 4)
-     * @throws IOException
      */
     @Test
     public void testReadExpressionsFromFile() throws IOException {
@@ -382,8 +371,6 @@ public class ParserTest {
         expectedProgram.addExpression(line3);
         expectedProgram.addExpression(line4);
 
-        System.out.println(program);
-
         assertEquals(expectedProgram, program);
     }
 
@@ -427,26 +414,6 @@ public class ParserTest {
 
         assertEquals(expectedProgram, program);
     }
-
-//    @Test
-//    public void testParsePrintStatementMultipleCommas() throws IOException {
-//        LinkedList<Token> tokens =  lexer.lex("src/test/resources/print_list_multiple_commas.txt");
-//        ProgramNode program = new Parser(tokens).parse();
-//
-//        PrintNode printNode = new PrintNode();
-//        printNode.addNode(new ExpressionNode(new TermNode(new VariableNode("F%"))));
-//        printNode.addNode(new StringNode("DEG F = "));
-//        printNode.addNode(new ExpressionNode(new TermNode(new VariableNode("C%"))));
-//        printNode.addNode(new StringNode("DEG C"));
-//
-//        StatementsNode statements = new StatementsNode();
-//        statements.addStatement(printNode);
-//
-//        ProgramNode expectedProgram = new ProgramNode();
-//        expectedProgram.addStatements(statements);
-//
-//        assertEquals(expectedProgram, program);
-//    }
 
     @Test
     public void testReadStatementsFromFile() throws IOException {
@@ -849,10 +816,6 @@ public class ParserTest {
         ProgramNode expectedProgram = new ProgramNode();
         StatementsNode statements  = new StatementsNode();
 
-
-        // Print the actual statements for debugging
-        System.out.println(actualProgram.getStatements());
-
         // Compare actualProgram with expectedProgram
         // assertEquals(expectedProgram, actualProgram, "The parsed program did not match the expected program.");
     }
@@ -864,22 +827,7 @@ public class ParserTest {
         ProgramNode expectedProgram = new ProgramNode();
 
         StatementsNode statements = new StatementsNode();
-
-        System.out.println(actualProgram.getStatements());
-        // Compare actualProgram with expectedProgram
-//        assertEquals(expectedProgram, actualProgram, "The parsed program did not match the expected program.");
     }
-
-//    @Test
-//    public void expressionWithFunctionInvocation_ReturnsFunctionNode() throws IOException {
-//        ProgramNode testProgram = parseExpressions("random()");
-//
-//        FunctionNode expectedFunction = new FunctionNode("random");
-//        ProgramNode expectedProgram = new ProgramNode();
-//        expectedProgram.addExpression(expectedFunction);
-//
-//        assertEquals(expectedProgram, testProgram);
-//    }
 
     @Test
     public void testFunctionNameToken() {
@@ -938,7 +886,7 @@ public class ParserTest {
     public void testForIncrement() throws IOException {
         ProgramNode program = parseStatements("FOR I = 1 TO 10\nPRINT I\nNEXT I");
         // Check that the first statement in the program is a ForNode
-        assertTrue(program.getStatements().get(0) instanceof ForNode);
+        assertInstanceOf(ForNode.class, program.getStatements().get(0));
         // Check that the increment is 1
         assertEquals(new FactorNode(new IntegerNode(1)), ((ForNode) program.getStatements().get(0)).getIncrement());
     }
@@ -950,33 +898,6 @@ public class ParserTest {
         // Check that the first statement in the program is a WhileNode
         assertInstanceOf(WhileNode.class, program.getStatements().get(0));
     }
-
-    @Test
-    public void testIf() throws IOException {
-        // TODO test the contents of While node
-        ProgramNode program = parseStatements("x = 4\nIF x < 5 THEN xIsSmall\nxIsSmall: PRINT \"x is small\"\nPRINT \"HELLO\"");
-        System.out.println(program);
-        // Check that the first statement in the program is a WhileNode
-        assertInstanceOf(AssignmentNode.class, program.getStatements().get(0));
-        assertInstanceOf(IfNode.class, program.getStatements().get(1));
-        assertInstanceOf(LabeledStatementNode.class, program.getStatements().get(2));
-        assertInstanceOf(PrintNode.class, ((LabeledStatementNode) program.getStatements().get(2)).getStatementNode());
-
-        Interpreter interpreter = new Interpreter(program);
-        interpreter.interpret();
-    }
-
-    @Test
-    public void testInterpretPrint() throws IOException {
-        // TODO test the contents of While node
-        ProgramNode program = parseStatements("PRINT \"HELLO\"");
-        System.out.println(program);
-        // Check that the first statement in the program is a WhileNode
-
-        Interpreter interpreter = new Interpreter(program);
-        interpreter.interpret();
-    }
-
 }
 
 

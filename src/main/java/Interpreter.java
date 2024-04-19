@@ -145,7 +145,6 @@ public class Interpreter {
             for (VariableNode variableNode : inputNode.getVariables()) {
                 String name = variableNode.getName();
                 InterpreterDataType type = variableNode.getType();
-                System.out.print(testInput.get(0));
                 String inputValue = testInput.remove(0); // Get and remove the first element from the test input list
                 switch (type) {
                     case INTEGER:
