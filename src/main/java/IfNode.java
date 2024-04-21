@@ -8,7 +8,9 @@ public class IfNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.ifStatement(this);
+    }
 
     public BooleanExpressionNode getCondition() {
         return condition;

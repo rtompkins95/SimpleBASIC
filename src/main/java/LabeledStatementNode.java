@@ -10,6 +10,11 @@ public class LabeledStatementNode extends StatementNode {
     }
 
     @Override
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.labeledStatement(this);
+    }
+
+    @Override
     public void accept(StatementVisitor visitor) {
         visitor.visit(this);
     }

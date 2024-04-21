@@ -14,7 +14,9 @@ public class ForNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.forStatement(this);
+    }
 
     public VariableNode getVariable() {
         return variable;

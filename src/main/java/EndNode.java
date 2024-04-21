@@ -5,4 +5,9 @@ public class EndNode extends StatementNode {
     public String toString() {
         return "EndNode()";
     }
+
+    @Override
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.endStatement(this);
+    }
 }

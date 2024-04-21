@@ -13,7 +13,9 @@ public class PrintNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.printStatement(this);
+    }
 
     public void addNode(Node node) {
         parameters.add(node);

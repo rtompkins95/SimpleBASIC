@@ -15,6 +15,11 @@ public class DataNode extends StatementNode {
     }
 
     @Override
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return this.getNext();
+    }
+
+    @Override
     public String toString() {
         return String.format("DataNode(%s)", data);
     }

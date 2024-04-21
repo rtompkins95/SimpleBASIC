@@ -6,7 +6,9 @@ public class GoSubNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.goSubStatement(this);
+    }
 
     public String getLabel() {
         return label;

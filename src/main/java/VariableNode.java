@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class VariableNode extends StatementNode {
+public class VariableNode extends Node {
     private final String name;
 
     private final InterpreterDataType type;
@@ -16,9 +16,6 @@ public class VariableNode extends StatementNode {
             this.type = InterpreterDataType.INTEGER;
         }
     }
-
-    @Override
-    public void accept(StatementVisitor visitor) {}
 
     public String getName() {
         return name;

@@ -6,8 +6,8 @@ public class GoToNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {
-        visitor.visit(this);
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.goToStatement(this);
     }
 
     public String getLabel() {

@@ -9,7 +9,9 @@ public class ReadNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.readStatement(this);
+    }
 
     @Override
     public String toString() {

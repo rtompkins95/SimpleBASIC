@@ -3,7 +3,9 @@ public abstract class StatementNode extends Node {
 
     private StatementNode next;
 
-    public abstract void accept(StatementVisitor visitor);
+    public void accept(StatementVisitor visitor) {}
+
+    public abstract StatementNode interpret(StatementVisitor visit);
 
     public void setNext(StatementNode curr) {
         this.next = curr;

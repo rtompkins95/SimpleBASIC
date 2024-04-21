@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class StatementsNode extends Node {
 
-    private List<StatementNode> statements = new ArrayList<>();
+    private final List<StatementNode> statements = new ArrayList<>();
 
     public StatementsNode() {}
 

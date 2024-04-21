@@ -821,18 +821,9 @@ public class ParserTest {
     }
 
     @Test
-    public void testForLoopFromFile() throws IOException {
-        LinkedList<Token> tokens = lexer.lex("src/test/resources/for_loop_2.bas");
-        ProgramNode actualProgram = new Parser(tokens).parse();
-        ProgramNode expectedProgram = new ProgramNode();
-
-        StatementsNode statements = new StatementsNode();
-    }
-
-    @Test
     public void testFunctionNameToken() {
         Lexer lexer = new Lexer();
-        LinkedList<Token> tokens = lexer.lex("src/test/resources/function_test.txt");
+        LinkedList<Token> tokens = lexer.lex("src/test/resources/random_test.txt");
 
         // Check the size of the tokens list
         assertEquals(4, tokens.size());
@@ -842,7 +833,6 @@ public class ParserTest {
 
         // Check the value of the first token
         assertEquals("random", tokens.get(0).getVal());
-
 
         // Check the type of the second token
         assertEquals(Token.TokenType.LPAREN, tokens.get(1).getTokenType());

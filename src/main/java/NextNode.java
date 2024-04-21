@@ -6,7 +6,9 @@ public class NextNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {}
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.nextStatement(this);
+    }
 
     public VariableNode getVariable() {
         return variable;

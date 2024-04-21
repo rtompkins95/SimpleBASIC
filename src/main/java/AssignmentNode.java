@@ -12,11 +12,6 @@ public class AssignmentNode extends StatementNode {
     }
 
     @Override
-    public void accept(StatementVisitor visitor) {
-        visitor.visit(this);
-    }
-
-    @Override
     public String toString() {
         return String.format("AssignmentNode(%s = %s)", variableNode, value);
     }
@@ -27,6 +22,11 @@ public class AssignmentNode extends StatementNode {
         if (o == null || getClass() != o.getClass()) return false;
         AssignmentNode that = (AssignmentNode) o;
         return Objects.equals(variableNode, that.variableNode) && Objects.equals(value, that.value);
+    }
+
+    @Override
+    public StatementNode interpret(StatementVisitor statementVisitor) {
+        return statementVisitor.assignmentStatement(this);
     }
 
     @Override

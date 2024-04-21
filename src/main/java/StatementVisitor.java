@@ -8,8 +8,20 @@
  */
 public interface StatementVisitor {
     void visit(LabeledStatementNode labeledStatementNode);
-    void visit(AssignmentNode assignmentNode);
     void visit(DataNode dataNode);
     void visit(WhileNode whileNode);
-    void visit(GoToNode goToNode);
+
+    StatementNode assignmentStatement(AssignmentNode assignmentNode);
+    StatementNode readStatement(ReadNode readNode);
+    StatementNode inputStatement(InputNode inputNode);
+    StatementNode printStatement(PrintNode printNode);
+    StatementNode ifStatement(IfNode ifNode);
+    StatementNode goSubStatement(GoSubNode goSubNode);
+    StatementNode goToStatement(GoToNode goToNode);
+    StatementNode returnStatement(ReturnNode returnNode);
+    StatementNode forStatement(ForNode forNode);
+    StatementNode whileStatement(WhileNode whileNode);
+    StatementNode nextStatement(NextNode nextNode);
+    StatementNode labeledStatement(LabeledStatementNode labeledStatementNode);
+    StatementNode endStatement(EndNode endNode);
 }
