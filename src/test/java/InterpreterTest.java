@@ -1,4 +1,9 @@
+import interpreter.Interpreter;
+import lexer.Lexer;
+import lexer.Token;
+import node.*;
 import org.junit.jupiter.api.Test;
+import parser.Parser;
 
 import java.io.IOException;
 import java.nio.file.Files;

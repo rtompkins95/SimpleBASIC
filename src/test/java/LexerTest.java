@@ -1,3 +1,5 @@
+import lexer.Lexer;
+import lexer.Token;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
