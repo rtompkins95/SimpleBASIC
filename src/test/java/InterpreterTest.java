@@ -48,6 +48,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(programNode);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         // Check that the data and labels were correctly stored
@@ -130,6 +131,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(programNode);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         // Check that the variables were correctly stored
@@ -154,6 +156,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Map<String, Integer> intVariables = interpreter.getIntVariables();

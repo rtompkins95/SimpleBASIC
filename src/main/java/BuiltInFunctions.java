@@ -34,4 +34,12 @@ public class BuiltInFunctions {
     public static float VALF(String str) {
         return Float.parseFloat(str);
     }
+
+    public static int POW(int a, int b) {
+        return (int) Math.pow(a, b);
+    }
+
+    public static float POWF(float a, float b) {
+        return (float) Math.pow(a, b);
+    }
 }

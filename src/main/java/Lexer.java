@@ -106,6 +106,8 @@ public class Lexer {
         knownWords.put("num$", Token.TokenType.FUNCTIONNAME);
         knownWords.put("val", Token.TokenType.FUNCTIONNAME);
         knownWords.put("val%", Token.TokenType.FUNCTIONNAME);
+        knownWords.put("pow", Token.TokenType.FUNCTIONNAME);
+        knownWords.put("pow%", Token.TokenType.FUNCTIONNAME);
     }
 
     /**

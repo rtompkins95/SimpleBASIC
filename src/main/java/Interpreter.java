@@ -92,39 +92,23 @@ public class Interpreter implements StatementVisitor {
     // Prints the prompt. Reads data and sets the variable(s)
     // If in test mode, reads from the test input list
     public StatementNode inputStatement(InputNode inputNode) {
-        if (testMode) {
-            for (VariableNode variableNode : inputNode.getVariables()) {
-                String name = variableNode.getName();
-                InterpreterDataType type = variableNode.getType();
-                String inputValue = testInput.remove(0); // Get and remove the first element from the test input list
-                switch (type) {
-                    case INTEGER:
-                        intVariables.put(name, Integer.parseInt(inputValue));
-                        break;
-                    case FLOAT:
-                        floatVariables.put(name, Float.parseFloat(inputValue));
-                        break;
-                    case STRING:
-                        stringVariables.put(name, inputValue);
-                        break;
-                }
-            }
-        } else {
+        if (!testMode) {
             System.out.print(inputNode.getPrompt().getValue());
-            for (VariableNode variableNode : inputNode.getVariables()) {
-                String name = variableNode.getName();
-                InterpreterDataType type = variableNode.getType();
-                switch (type) {
-                    case INTEGER:
-                        intVariables.put(name, Integer.parseInt(scanner.nextLine()));
-                        break;
-                    case FLOAT:
-                        floatVariables.put(name, Float.parseFloat(scanner.nextLine()));
-                        break;
-                    case STRING:
-                        stringVariables.put(name, scanner.nextLine());
-                        break;
-                }
+        }
+        for (VariableNode variableNode : inputNode.getVariables()) {
+            String name = variableNode.getName();
+            InterpreterDataType type = variableNode.getType();
+            String inputValue = testMode ? testInput.remove(0) : scanner.nextLine();
+            switch (type) {
+                case INTEGER:
+                    intVariables.put(name, Integer.parseInt(inputValue));
+                    break;
+                case FLOAT:
+                    floatVariables.put(name, Float.parseFloat(inputValue));
+                    break;
+                case STRING:
+                    stringVariables.put(name, inputValue);
+                    break;
             }
         }
         return inputNode.getNext();
@@ -140,7 +124,7 @@ public class Interpreter implements StatementVisitor {
             InterpreterDataType type = variableNode.getType();
             Node value = dataQueue.poll();
 
-            if (type == InterpreterDataType.STRING  && value instanceof StringNode) {
+            if (type == InterpreterDataType.STRING && value instanceof StringNode) {
                 stringVariables.put(name, ((StringNode) value).getValue());
             } else if (type == InterpreterDataType.FLOAT && value instanceof FloatNode) {
                 floatVariables.put(name, ((FloatNode) value).getFloat());
@@ -421,6 +405,16 @@ public class Interpreter implements StatementVisitor {
             if (functionName.equals("VAL%")) {
                 String str = (String) evaluate(parameters.get(0));
                 return BuiltInFunctions.VALF(str);
+            }
+            if (functionName.equals("POW")) {
+                int a = (Integer) evaluate(parameters.get(0));
+                int b = (Integer) evaluate(parameters.get(1));
+                return BuiltInFunctions.POW(a, b);
+            }
+            if (functionName.equals("POWF")) {
+                float a = (Float) evaluate(parameters.get(0));
+                float b = (Float) evaluate(parameters.get(1));
+                return BuiltInFunctions.POWF(a, b);
             }
         }
 

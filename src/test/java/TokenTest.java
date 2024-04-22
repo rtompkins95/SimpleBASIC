@@ -11,12 +11,4 @@ class TokenTest {
       String expected = "WORD(hello)";
       assertEquals(expected, token.toString(), "Failed: Token with value toString.");
     }
-   
-//   // Test toString() for a Token object without a value
-//   @Test
-//   void testToStringWithoutValue() {
-//      Token token = new Token(Token.TokenType.ENDOFLINE, 2, 20);
-//      String expected = "ENDOFLINE";
-//      assertEquals(expected, token.toString(), "Failed: Token without value toString.");
-//   }
 }
