@@ -106,6 +106,10 @@ PRINT "hello. 5 + 3 = ", 5+3, " how do you like that ", name$, "?"
 - `VAL(string)` – converts a string to an integer
 - `VAL%(string)` – converts a string to a float
 
+## Other Examples
+
+There is an extensive number of example programs in the src/test/resources folder of this project
+
 ## Installation
 
 Ensure you have Java 1.8 and at least Maven 3.8.x installed on your system or environment where the project is being built.
