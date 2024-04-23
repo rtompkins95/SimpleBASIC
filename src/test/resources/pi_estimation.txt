@@ -15,13 +15,12 @@ PRINT "Pi: ", (4.0 * hit% / total%)
 END
 
 
-
 throwDart:
 
 x% = RANDOM%(0.0, 1.0)
 y% = RANDOM%(0.0, 1.0)
 
-dist% = (POW%(x%, 2.0) + POW%(y%, 2.0))
+dist% = POW%(x%, 2.0) + POW%(y%, 2.0)
 
 if dist% < 1.0 THEN addHit
 RETURN
