@@ -99,12 +99,19 @@ PRINT "hello. 5 + 3 = ", 5+3, " how do you like that ", name$, "?"
 ## Built-in Functions
 
 - `RANDOM()` – returns a random integer
+- `RANDOM(min, max)` – returns a random integer in the range min to max
+- `RANDOM%()` – returns a random float
+- `RANDOM%(min%, max%)` – returns a random float in the range min% to max%
+- `POW(base, exponent)` – returns the integer base raised to the power of exponent
+- `POW%(base%, exponent%)` – returns the float base% raised to the power of exponent$
 - `LEFT$(string, int)` – returns the leftmost N characters from the string 
 - `RIGHT$(string, int)` – returns the rightmost N characters from the string 
 - `MID$(string,int, int)` – returns the characters of the string, starting from the 2nd argument and taking the 3rd argument as the count; `MID$("Albany",2,3)` = "ban"
 - `NUM$(int or float)` – converts a number to a string
 - `VAL(string)` – converts a string to an integer
 - `VAL%(string)` – converts a string to a float
+- `INT(int or float)` – converts a number to an integer
+- `FLOAT(int or float)` – converts a number to a float
 
 ## Other Examples
 

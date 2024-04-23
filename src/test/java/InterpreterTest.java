@@ -75,6 +75,7 @@ public class InterpreterTest {
         ProgramNode actualProgram = new Parser(tokens).parse();
 
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Queue<Node> dataQueue = interpreter.getDataQueue();
@@ -185,6 +186,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Map<String, String> stringVariables = interpreter.getStringVariables();
@@ -201,6 +203,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Map<String, Integer> intVariables = interpreter.getIntVariables();
@@ -214,12 +217,13 @@ public class InterpreterTest {
 
     // Tests the ability to store variables assigned to function calls
     @Test
-    public void testFunctionsFromFile() throws IOException {
+    public void testStringFunctionsFromFile() throws IOException {
         LinkedList<Token> tokens = lexer.lex("src/test/resources/function_storage.bas");
         ProgramNode actualProgram = new Parser(tokens).parse();
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Map<String, Integer> intVariables = interpreter.getIntVariables();
@@ -253,8 +257,62 @@ public class InterpreterTest {
         // Testing VAL%() function
         assertTrue(floatVariables.containsKey("stringToFloat%"));
         assertEquals(5.0f, floatVariables.get("stringToFloat%"));
+    }
 
+    @Test
+    public void testConversionFunctionsFromFile() throws IOException {
+        LinkedList<Token> tokens = lexer.lex("src/test/resources/builtin_conversions.bas");
+        ProgramNode actualProgram = new Parser(tokens).parse();
 
+        // Run Interpreter on it
+        Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
+        interpreter.interpret();
+
+        Map<String, Integer> intVariables = interpreter.getIntVariables();
+        Map<String, Float> floatVariables = interpreter.getFloatVariables();
+        Map<String, String> stringVariables = interpreter.getStringVariables();
+
+        assertTrue(stringVariables.containsKey("a$"));
+        assertEquals(stringVariables.get("a$"), "1.0");
+
+        assertTrue(stringVariables.containsKey("b$"));
+        assertEquals(stringVariables.get("b$"), "1");
+
+        assertTrue(intVariables.containsKey("c"));
+        assertEquals(intVariables.get("c"), 4);
+
+        assertTrue(floatVariables.containsKey("d%"));
+        assertEquals(floatVariables.get("d%"), 4.0f);
+    }
+
+    @Test
+    public void testRandomFunctionsFromFile() throws IOException {
+        LinkedList<Token> tokens = lexer.lex("src/test/resources/random_range.txt");
+        ProgramNode actualProgram = new Parser(tokens).parse();
+
+        // Run Interpreter on it
+        Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
+        interpreter.interpret();
+
+        Map<String, Integer> intVariables = interpreter.getIntVariables();
+        Map<String, Float> floatVariables = interpreter.getFloatVariables();
+
+        assertTrue(intVariables.containsKey("a"));
+        assertNotNull(intVariables.get("a"));
+
+        assertTrue(floatVariables.containsKey("b%"));
+        assertNotNull(floatVariables.get("b%"));
+
+        assertTrue(intVariables.containsKey("c"));
+        assertTrue(intVariables.get("c") >= 1 && intVariables.get("c") <= 5);
+
+        assertTrue(floatVariables.containsKey("d%"));
+        assertNotNull(floatVariables.get("d%"));
+
+        assertTrue(floatVariables.containsKey("e%"));
+        assertTrue(floatVariables.get("e%") >= 0F && floatVariables.get("e%") <= 1000F);
     }
 
     // Tests the ability to perform math operations
@@ -265,6 +323,7 @@ public class InterpreterTest {
 
         // Run Interpreter on it
         Interpreter interpreter = new Interpreter(actualProgram);
+        interpreter.setTestMode(true);
         interpreter.interpret();
 
         Map<String, Integer> intVariables = interpreter.getIntVariables();
@@ -504,6 +563,17 @@ public class InterpreterTest {
 
         List<String> actualPrint = interpreter.getOutput();
         assertEquals(expectedPrint, actualPrint);
+    }
+
+    @Test
+    public void testPiEstimation() throws IOException {
+        LinkedList<Token> tokens = lexer.lex("src/test/resources/pi_estimation.txt");
+        ProgramNode program = new Parser(tokens).parse();
+
+        Interpreter interpreter = new Interpreter(program);
+        interpreter.setTestMode(true);
+        interpreter.setTestInput(List.of("1000"));
+        interpreter.interpret();
     }
 
     @Test

@@ -1,11 +1,58 @@
 package node;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 public class BuiltInFunctions {
 
+    public enum FUNCTION {
+        RANDOM,
+        RANDOMF,
+        LEFT$,
+        RIGHT$,
+        MID$,
+        NUM$,
+        VAL,
+        VALF,
+        POW,
+        POWF,
+        INT,
+        FLOAT
+    }
+
+    public static Map<String, FUNCTION> functionMap = new HashMap<>() {{
+        put("RANDOM", FUNCTION.RANDOM);
+        put("RANDOM%", FUNCTION.RANDOMF);
+        put("LEFT$", FUNCTION.LEFT$);
+        put("RIGHT$", FUNCTION.RIGHT$);
+        put("MID$", FUNCTION.MID$);
+        put("NUM$", FUNCTION.NUM$);
+        put("VAL", FUNCTION.VAL);
+        put("VAL%", FUNCTION.VALF);
+        put("POW", FUNCTION.POW);
+        put("POW%", FUNCTION.POWF);
+        put("INT", FUNCTION.INT);
+        put("FLOAT", FUNCTION.FLOAT);
+    }};
+
+    private static Random random = new Random();
 
     // Generates a random integer value between 0 and Integer.MAX_VALUE.
     public static int RANDOM() {
-        return (int) (Math.random() * Integer.MAX_VALUE);
+        return random.nextInt() * Integer.MAX_VALUE;
+    }
+
+    public static int RANDOM(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static float RANDOMF() {
+        return random.nextFloat() * Float.MAX_VALUE;
+    }
+
+    public static float RANDOMF(float min, float max) {
+        return min + random.nextFloat() * (max - min);
     }
 
     // Returns the leftmost n characters of a string.
@@ -43,5 +90,13 @@ public class BuiltInFunctions {
 
     public static float POWF(float a, float b) {
         return (float) Math.pow(a, b);
+    }
+
+    public static int INT(Number n) {
+        return n.intValue();
+    }
+
+    public static float FLOAT(Number n) {
+        return n.floatValue();
     }
 }

@@ -102,6 +102,7 @@ public class Lexer {
         knownWords.put("while", Token.TokenType.WHILE);
         knownWords.put("end", Token.TokenType.END);
         knownWords.put("random", Token.TokenType.FUNCTIONNAME);
+        knownWords.put("random%", Token.TokenType.FUNCTIONNAME);
         knownWords.put("left$", Token.TokenType.FUNCTIONNAME);
         knownWords.put("right$", Token.TokenType.FUNCTIONNAME);
         knownWords.put("mid$", Token.TokenType.FUNCTIONNAME);
@@ -110,6 +111,8 @@ public class Lexer {
         knownWords.put("val%", Token.TokenType.FUNCTIONNAME);
         knownWords.put("pow", Token.TokenType.FUNCTIONNAME);
         knownWords.put("pow%", Token.TokenType.FUNCTIONNAME);
+        knownWords.put("int", Token.TokenType.FUNCTIONNAME);
+        knownWords.put("float", Token.TokenType.FUNCTIONNAME);
     }
 
     /**

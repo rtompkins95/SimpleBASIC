@@ -1,0 +1,5 @@
+a = RANDOM()
+b% = RANDOM%()
+c = RANDOM(1, 5)
+d% = RANDOM%()
+e% = RANDOM%(0.0, 1000.0)

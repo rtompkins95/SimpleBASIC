@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class FunctionNode extends Node {
-    private final String functionName;
+    private final BuiltInFunctions.FUNCTION functionName;
     private List<Node> parameters;
 
     public FunctionNode(String functionName) {
+        this.functionName = BuiltInFunctions.functionMap.get(functionName);
+        this.parameters = new ArrayList<>();
+    }
+
+    public FunctionNode(BuiltInFunctions.FUNCTION functionName) {
         this.functionName = functionName;
         this.parameters = new ArrayList<>();
     }
@@ -22,7 +27,7 @@ public class FunctionNode extends Node {
         return String.format("FunctionNode(%s, %s)", functionName, parameters);
     }
 
-    public String getFunctionName() {
+    public BuiltInFunctions.FUNCTION getFunctionName() {
         return functionName;
     }
 

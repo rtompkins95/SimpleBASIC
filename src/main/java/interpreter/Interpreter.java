@@ -167,8 +167,10 @@ public class Interpreter implements StatementVisitor {
         Object right = evaluate(booleanExpressionNode.getRight());
         BooleanExpressionNode.OPERATOR operator = booleanExpressionNode.getOperator();
 
-        if (!isInteger(left, right) || !isNumeric(left, right)) {
-            throw new RuntimeException(String.format("Unsupported comparison for operands: '%s' and '%s'", left, right));
+        if (!isInteger(left, right) && !isNumeric(left, right)) {
+            System.out.println(left.getClass());
+            System.out.println(right.getClass());
+            throw new RuntimeException(String.format("Unsupported comparison %s with operands: '%s' and '%s'", operator, left, right));
         }
 
         if (operator == BooleanExpressionNode.OPERATOR.LESSTHAN) {
@@ -377,48 +379,44 @@ public class Interpreter implements StatementVisitor {
         if (node instanceof FunctionNode) {
             // evaluate parameters and call the right function based on name
             FunctionNode functionNode = (FunctionNode) node;
-            String functionName = functionNode.getFunctionName();
+            BuiltInFunctions.FUNCTION functionName = functionNode.getFunctionName();
             List<Node> parameters = functionNode.getParameters();
-            if (functionName.equals("RANDOM")) {
-                return BuiltInFunctions.RANDOM();
+
+            if (functionName == BuiltInFunctions.FUNCTION.RANDOM) {
+                return random(parameters);
             }
-            if (functionName.equals("LEFT$")) {
-                String str = (String) evaluate(parameters.get(0));
-                int n = (Integer) evaluate(parameters.get(1));
-                return BuiltInFunctions.LEFT$(str, n);
+            if (functionName == BuiltInFunctions.FUNCTION.RANDOMF) {
+                return randomf(parameters);
             }
-            if (functionName.equals("RIGHT$")) {
-                String str = (String) evaluate(parameters.get(0));
-                int n = (Integer) evaluate(parameters.get(1));
-                return BuiltInFunctions.RIGHT$(str, n);
+            if (functionName == BuiltInFunctions.FUNCTION.LEFT$) {
+                return left$(parameters);
             }
-            if (functionName.equals("MID$")) {
-                String str = (String) evaluate(parameters.get(0));
-                int start = (Integer) evaluate(parameters.get(1));
-                int count = (Integer) evaluate(parameters.get(2));
-                return BuiltInFunctions.MID$(str, start, count);
+            if (functionName == BuiltInFunctions.FUNCTION.RIGHT$) {
+                return right$(parameters);
             }
-            if (functionName.equals("NUM$")) {
-                Number num = (Number) evaluate(parameters.get(0));
-                return BuiltInFunctions.NUM$(num);
+            if (functionName == BuiltInFunctions.FUNCTION.MID$) {
+                return mid$(parameters);
             }
-            if (functionName.equals("VAL")) {
-                String str = (String) evaluate(parameters.get(0));
-                return BuiltInFunctions.VAL(str);
+            if (functionName == BuiltInFunctions.FUNCTION.NUM$) {
+                return num$(parameters);
             }
-            if (functionName.equals("VAL%")) {
-                String str = (String) evaluate(parameters.get(0));
-                return BuiltInFunctions.VALF(str);
+            if (functionName == BuiltInFunctions.FUNCTION.VAL) {
+                return val(parameters);
             }
-            if (functionName.equals("POW")) {
-                int a = (Integer) evaluate(parameters.get(0));
-                int b = (Integer) evaluate(parameters.get(1));
-                return BuiltInFunctions.POW(a, b);
+            if (functionName == BuiltInFunctions.FUNCTION.VALF) {
+                return valf(parameters);
             }
-            if (functionName.equals("POWF")) {
-                float a = (Float) evaluate(parameters.get(0));
-                float b = (Float) evaluate(parameters.get(1));
-                return BuiltInFunctions.POWF(a, b);
+            if (functionName == BuiltInFunctions.FUNCTION.POW) {
+                return pow(parameters);
+            }
+            if (functionName == BuiltInFunctions.FUNCTION.POWF) {
+                return powf(parameters);
+            }
+            if (functionName == BuiltInFunctions.FUNCTION.INT) {
+                return _int(parameters);
+            }
+            if (functionName == BuiltInFunctions.FUNCTION.FLOAT) {
+                return _float(parameters);
             }
         }
 
@@ -475,6 +473,115 @@ public class Interpreter implements StatementVisitor {
             return evaluate(factorNode.getNode());
         }
         throw new RuntimeException(String.format("Unsupported node: %s", node));
+    }
+
+    private Integer random(List<Node> parameters) {
+        if (!parameters.isEmpty() && parameters.size() != 2) {
+            throw new RuntimeException("RANDOM() expects zero or two parameters: (min, max)");
+        } else if (parameters.size() == 2) {
+            int min = (Integer) evaluate(parameters.get(0));
+            int max = (Integer) evaluate(parameters.get(1));
+            return BuiltInFunctions.RANDOM(min, max);
+        }
+        return BuiltInFunctions.RANDOM();
+    }
+
+    private Float randomf(List<Node> parameters) {
+        if (!parameters.isEmpty() && parameters.size() != 2) {
+            throw new RuntimeException("RANDOMF() expects zero or two parameters: (min, max)");
+        } else if (parameters.size() == 2) {
+            float min = (Float) evaluate(parameters.get(0));
+            float max = (Float) evaluate(parameters.get(1));
+            return BuiltInFunctions.RANDOMF(min, max);
+        }
+        return BuiltInFunctions.RANDOMF();
+    }
+
+    private String left$(List<Node> parameters) {
+        Object str = evaluate(parameters.get(0));
+        Object n = evaluate(parameters.get(1));
+        if (!(str instanceof String && n instanceof Integer)) {
+            throw new RuntimeException(String.format("Cannot use values: %s and %s for builtin function LEFT$(string, integer)", str, n));
+        }
+        return BuiltInFunctions.LEFT$((String) str, (Integer) n);
+    }
+
+    private String right$(List<Node> parameters) {
+        Object str = evaluate(parameters.get(0));
+        Object n = evaluate(parameters.get(1));
+        if (!(str instanceof String && n instanceof Integer)) {
+            throw new RuntimeException(String.format("Cannot use values: %s and %s for builtin function RIGHT$(string, integer)", str, n));
+        }
+        return BuiltInFunctions.RIGHT$((String) str, (Integer) n);
+    }
+
+    private String mid$(List<Node> parameters) {
+        Object str = evaluate(parameters.get(0));
+        Object start = evaluate(parameters.get(1));
+        Object count = evaluate(parameters.get(2));
+        if (!(str instanceof String && start instanceof Integer && count instanceof Integer)) {
+            throw new RuntimeException(String.format("Cannot use values: %s, %s, %s for builtin function MID$(string, integer, integer)", str, start, count));
+        }
+
+        return BuiltInFunctions.MID$((String) str, (Integer) start, (Integer) count);
+    }
+
+    private String num$(List<Node> parameters) {
+        Object num = evaluate(parameters.get(0));
+        if (!(num instanceof Number)) {
+            throw new RuntimeException(String.format("Cannot use value: %s for builtin function NUM$(integer/float)", num));
+        }
+        return BuiltInFunctions.NUM$((Number) num);
+    }
+
+    private Integer val(List<Node> parameters) {
+        Object str = evaluate(parameters.get(0));
+        if (!(str instanceof String)) {
+            throw new RuntimeException(String.format("Cannot use value: %s for builtin function: ", str) +  "VAL(string)");
+        }
+        return BuiltInFunctions.VAL((String) str);
+    }
+
+    private Float valf(List<Node> parameters) {
+        Object str = evaluate(parameters.get(0));
+        if (!(str instanceof String)) {
+            throw new RuntimeException(String.format("Cannot use value: %s for builtin function: ", str) +  "VAL%(string)");
+        }
+        return BuiltInFunctions.VALF((String) str);
+    }
+
+    private Integer pow(List<Node> parameters) {
+        Object a = evaluate(parameters.get(0));
+        Object b = evaluate(parameters.get(1));
+        if (!(a instanceof Integer && b instanceof Integer)) {
+            throw new RuntimeException(String.format("Cannot use values: %s and %s for builtin function POW$(integer, integer)", a, b));
+        }
+        return BuiltInFunctions.POW((Integer) a, (Integer) b);
+    }
+
+    private Float powf(List<Node> parameters) {
+        Object a = evaluate(parameters.get(0));
+        Object b = evaluate(parameters.get(1));
+        if (!(a instanceof Float && b instanceof Float)) {
+            throw new RuntimeException(String.format("Cannot use values: %s and %s for builtin function POWF(float, float)", a, b));
+        }
+        return BuiltInFunctions.POWF((Float) a, (Float) b);
+    }
+
+    private Integer _int(List<Node> parameters) {
+        Object n = evaluate(parameters.get(0));
+        if (!(n instanceof Number)) {
+            throw new RuntimeException(String.format("Cannot use value: %s for builtin INT(int/float)", n));
+        }
+        return BuiltInFunctions.INT((Number) n);
+    }
+
+    private Float _float(List<Node> parameters) {
+        Object n = evaluate(parameters.get(0));
+        if (!(n instanceof Number)) {
+            throw new RuntimeException(String.format("Cannot use value: %s for builtin FLOAT(int/float)", n));
+        }
+        return BuiltInFunctions.FLOAT((Number) n);
     }
 
     // Checks if both arguments are integers

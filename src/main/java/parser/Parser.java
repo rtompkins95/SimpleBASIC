@@ -546,9 +546,13 @@ public List<Node> printList() {
      */
     public FunctionNode functionInvocation() {
         if (!peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
-            return null;
+            throw new RuntimeException("Expected valid function name for function invocation");
         }
         String functionName = tokenManager.matchAndRemove(Token.TokenType.FUNCTIONNAME).get().getVal();
+
+        if (!BuiltInFunctions.functionMap.containsKey(functionName)) {
+            throw new IllegalArgumentException(String.format("Unknown built-in function: %s", functionName));
+        }
         if (!matchAndRemove(Token.TokenType.LPAREN)) {
             throw new IllegalArgumentException("Expected LPAREN token");
         }
@@ -556,7 +560,7 @@ public List<Node> printList() {
         if (!matchAndRemove(Token.TokenType.RPAREN)) {
             throw new IllegalArgumentException("Expected RPAREN token");
         }
-        FunctionNode functionNode = new FunctionNode(functionName);
+        FunctionNode functionNode = new FunctionNode(BuiltInFunctions.functionMap.get(functionName));
         functionNode.setParameters(parameters);
         return functionNode;
     }
