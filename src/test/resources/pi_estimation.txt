@@ -6,7 +6,7 @@ GOSUB throwDart
 NEXT i
 
 PRINT "Num Thrown: ", total
-PRINT "Num hit: ", hit
+PRINT "Num Hit: ", hit
 
 hit% = FLOAT(hit)
 total% = FLOAT(total)
