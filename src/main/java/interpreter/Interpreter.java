@@ -88,7 +88,7 @@ public class Interpreter implements StatementVisitor {
         } else if (type == InterpreterDataType.STRING && value instanceof String) {
             stringVariables.put(name, (String) value);
         } else {
-            throw new IllegalArgumentException(String.format("Cannot assign %s to variable '%s' with type %s", value, name, type));
+            throw new IllegalArgumentException(String.format("Cannot assign '%s' to variable '%s' with type '%s'", value, name, type));
         }
         return assignmentNode.getNext();
     }
@@ -135,7 +135,7 @@ public class Interpreter implements StatementVisitor {
             } else if (type == InterpreterDataType.INTEGER && value instanceof IntegerNode) {
                 intVariables.put(name, ((IntegerNode) value).getInt());
             } else {
-                throw new IllegalArgumentException(String.format("Cannot assign value: %s to variable %s of type: %s", value, name, type));
+                throw new IllegalArgumentException(String.format("Cannot assign value '%s' to variable '%s' of type '%s'", value, name, type));
             }
         }
         return readNode.getNext();
@@ -210,7 +210,7 @@ public class Interpreter implements StatementVisitor {
                 return ((Number) left).floatValue() == ((Number) right).floatValue();
             }
         } else {
-            throw new RuntimeException(String.format("Unsupported comparison: %s", operator));
+            throw new RuntimeException(String.format("Invalid boolean comparison: %s", operator));
         }
         return false;
     }
@@ -222,12 +222,15 @@ public class Interpreter implements StatementVisitor {
 
     public StatementNode goToStatement(GoToNode goToNode) {
         if (!labels.containsKey(goToNode.getLabel())) {
-            throw new RuntimeException(String.format("No labeled statement for GOTO: %s", goToNode.getLabel()));
+            throw new RuntimeException(String.format("No matching labeled statement '%s' in 'GOTO' statement", goToNode.getLabel()));
         }
         return labels.get(goToNode.getLabel());
     }
 
     public StatementNode returnStatement(ReturnNode returnNode) {
+        if (stack.isEmpty()) {
+            throw new IllegalArgumentException("'RETURN' statement without matching 'GOSUB'");
+        }
         return stack.pop();
     }
 

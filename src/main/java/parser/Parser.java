@@ -118,9 +118,9 @@ public class Parser {
         } else if (peekAndMatch(Token.TokenType.INPUT)) {
             return inputStatement();
         } else if (peekAndMatch(Token.TokenType.GOTO)) {
-            return gotoStatement();
+            return goToStatement();
         } else if (peekAndMatch(Token.TokenType.GOSUB)) {
-            return gosubStatement();
+            return goSubStatement();
         } else if (peekAndMatch(Token.TokenType.RETURN)) {
             return returnStatement();
         } else if (peekAndMatch(Token.TokenType.WORD)) {
@@ -157,14 +157,14 @@ public class Parser {
      */
     public StatementNode whileStatement() {
         if (!matchAndRemove(Token.TokenType.WHILE)) {
-            throw new IllegalArgumentException("Expected WHILE token");
+            throw illegalArgumentException("WHILE", "Expected 'WHILE' token");
         }
 
         BooleanExpressionNode condition = booleanExpression();
 
         // Check if the next token is the end label of the while loop
         if (!peekAndMatch(Token.TokenType.WORD)) {
-            throw new IllegalArgumentException("Expected a WORD token to create label for WhileNode");
+            throw illegalArgumentException("WHILE", "Expected a 'WORD' token at the end of 'WHILE' loop");
         }
 
         // Remove the end label from the token stream, store it as the end label
@@ -184,7 +184,7 @@ public class Parser {
      */
     public StatementNode endStatement() {
         if (!matchAndRemove(Token.TokenType.END)) {
-            throw new IllegalArgumentException("Expected END token");
+            throw illegalArgumentException("END", "Expected 'END' token");
         }
         return new EndNode();
     }
@@ -205,27 +205,26 @@ public class Parser {
      */
     public StatementNode ifStatement() {
         if (!matchAndRemove(Token.TokenType.IF)) {
-            throw new IllegalArgumentException("Expected IF token");
+            throw illegalArgumentException("IF", "Expected 'IF' token");
         }
         BooleanExpressionNode condition = booleanExpression();
         if (!matchAndRemove(Token.TokenType.THEN)) {
-            throw new IllegalArgumentException("Expected THEN token");
+            throw illegalArgumentException("IF", "Expected 'THEN' token");
         }
         if (!peekAndMatch(Token.TokenType.WORD)) {
-            throw new IllegalArgumentException("Expected a label identifier after THEN");
+            throw illegalArgumentException("IF", "Expected a label identifier after 'THEN' token");
         }
         String label = tokenManager.matchAndRemove(Token.TokenType.WORD).get().getVal();
         return new IfNode(condition, label);
     }
 
-    public GoToNode gotoStatement() {
+    public GoToNode goToStatement() {
         if (!matchAndRemove(Token.TokenType.GOTO)) {
-            throw new IllegalArgumentException("Expected GOTO token");
+            throw illegalArgumentException("GOTO", "Expected 'GOTO' token");
         }
         if (!peekAndMatch(Token.TokenType.WORD)) {
-            throw new IllegalArgumentException("Expected Label for GOTO token");
+            throw illegalArgumentException("GOTO", "Expected label after 'GOTO' token");
         }
-
         return new GoToNode(tokenManager.matchAndRemove(Token.TokenType.WORD).get().getVal());
     }
 
@@ -251,7 +250,7 @@ public class Parser {
         } else if (matchAndRemove(Token.TokenType.EQUALS)) {
             operator = BooleanExpressionNode.OPERATOR.EQUALS;
         } else {
-            throw new IllegalArgumentException("Expected a boolean operator");
+            throw illegalArgumentException("Boolean expression", "Expected a boolean operator ('>', '>=', '<', '<=', '<>', '=')");
         }
         ExpressionNode right = (ExpressionNode) expression();
         return new BooleanExpressionNode(left, operator, right);
@@ -265,7 +264,7 @@ public class Parser {
      */
     public StatementNode forStatement() {
         if(!matchAndRemove(Token.TokenType.FOR)) {
-            throw new IllegalArgumentException("Expected FOR token");
+            throw illegalArgumentException("FOR", "Expected 'FOR' token");
         }
 
         Optional<Token> wordTokenOpt = tokenManager.matchAndRemove(Token.TokenType.WORD);
@@ -273,17 +272,17 @@ public class Parser {
         if (wordTokenOpt.isPresent()) {
             variableNode = new VariableNode(wordTokenOpt.get().getVal());
         } else {
-            throw new IllegalArgumentException("Expected Variable Name");
+            throw illegalArgumentException("FOR", "Expected a 'VARIABLE' name");
         }
 
         if (!matchAndRemove(Token.TokenType.EQUALS)) {
-            throw new IllegalArgumentException("Expected EQUALS token");
+            throw illegalArgumentException("FOR", "Expected an 'EQUALS' token");
         }
 
         FactorNode initialValue = (FactorNode) factor();
 
         if (!matchAndRemove(Token.TokenType.TO)) {
-            throw new IllegalArgumentException("Expected TO token");
+            throw illegalArgumentException("FOR", "Expected 'TO' token");
         }
 
         Node limit = factor();
@@ -291,6 +290,9 @@ public class Parser {
         // default to 1
         FactorNode increment = new FactorNode(new IntegerNode(1));
         if (matchAndRemove(Token.TokenType.STEP)) {
+            if (!peekAndMatch(Token.TokenType.NUMBER)) {
+                throw illegalArgumentException("FOR", "Expected 'NUMBER' after 'STEP'");
+            }
             increment = number(tokenManager.matchAndRemove(Token.TokenType.NUMBER).get(), false);
         }
         return new ForNode(variableNode, initialValue, limit, increment);
@@ -304,10 +306,10 @@ public class Parser {
      */
     public StatementNode nextStatement() {
         if(!matchAndRemove(Token.TokenType.NEXT)) {
-            throw new IllegalArgumentException("Expected NEXT token");
+            throw illegalArgumentException("NEXT", "Expected 'NEXT' token");
         }
         if (!peekAndMatch(Token.TokenType.WORD)) {
-            throw new IllegalArgumentException("Expected a variable identifier after NEXT");
+            throw illegalArgumentException("NEXT", "Expected a variable identifier after 'NEXT'");
         }
         VariableNode variable = (VariableNode) factor();
         return new NextNode(variable);
@@ -321,12 +323,12 @@ public class Parser {
      * @return a new GosubNode representing the GOSUB statement with the parsed label identifier
      * @throws IllegalArgumentException if a label identifier is not found after the GOSUB token
      */
-    public StatementNode gosubStatement() {
-        if(!matchAndRemove(Token.TokenType.GOSUB)) {
-            throw new IllegalArgumentException("Expected GOSUB token");
+    public StatementNode goSubStatement() {
+        if (!matchAndRemove(Token.TokenType.GOSUB)) {
+            throw illegalArgumentException("GOSUB", "Expected 'GOSUB' token");
         }
         if (!peekAndMatch(Token.TokenType.WORD)) {
-            throw new IllegalArgumentException("Expected a label identifier after GOSUB");
+            throw illegalArgumentException("GOSUB", "Expected a label identifier after 'GOSUB' token");
         }
         String label = tokenManager.matchAndRemove(Token.TokenType.WORD).get().getVal();
         return new GoSubNode(label);
@@ -343,10 +345,10 @@ public class Parser {
      */
     public StatementNode returnStatement() {
         if(!matchAndRemove(Token.TokenType.RETURN)) {
-            throw new IllegalArgumentException("Expected RETURN token");
+            throw illegalArgumentException("RETURN", "'RETURN' must be the only token in a RETURN statement");
         }
         if (!peekAndMatch(Token.TokenType.ENDOFLINE)) {
-            throw new IllegalArgumentException("RETURN statement should be alone on a line");
+            throw illegalArgumentException("RETURN", "'RETURN' must be the only token in a RETURN statement");
         }
         return new ReturnNode();
     }
@@ -361,7 +363,7 @@ public class Parser {
      */
     public StatementNode inputStatement() {
         if (!peekAndMatch(Token.TokenType.INPUT)) {
-            throw new IllegalArgumentException(String.format("Invalid Input Statement: %s", peek()));
+            throw illegalArgumentException("INPUT", "Expected 'INPUT' token");
         } else {
             matchAndRemove(Token.TokenType.INPUT);
         }
@@ -369,7 +371,7 @@ public class Parser {
         // First argument should be a string literal
         StringNode promptNode;
         if (!peekAndMatch(Token.TokenType.STRINGLITERAL)) {
-            throw new IllegalArgumentException(String.format("Invalid Input Statement: %s", peek()));
+            throw new IllegalArgumentException(String.format("Invalid 'INPUT' statement with token: %s", peek()));
         } else {
             promptNode = new StringNode(tokenManager.matchAndRemove(Token.TokenType.STRINGLITERAL).get().getVal());
         }
@@ -383,7 +385,7 @@ public class Parser {
             if (peekAndMatch(Token.TokenType.WORD)) {
                 inputs.add(new VariableNode(tokenManager.matchAndRemove(Token.TokenType.WORD).get().getVal()));
             } else {
-                throw new IllegalArgumentException(String.format("Invalid token in Read Statement: %s", peek()));
+                throw illegalArgumentException("INPUT", "Expected 'WORD' tokens separated by 'COMMA' tokens");
             }
         }
         return new InputNode(promptNode, inputs);
@@ -400,15 +402,18 @@ public class Parser {
      */
     public StatementNode readStatement() {
         if (!matchAndRemove(Token.TokenType.READ)) {
-            throw new IllegalArgumentException("Invalid Read Statement");
+            throw illegalArgumentException("READ", "Expected 'READ' token");
         }
         List<VariableNode> variables = new ArrayList<>();
+        if (!peekAndMatch(Token.TokenType.WORD)) {
+            throw illegalArgumentException("READ", "Expected a 'VARIABLE' identifier after 'READ' token");
+        }
         do {
             Node node = factor();
             if (node instanceof VariableNode) {
                 variables.add((VariableNode) node);
             } else {
-                throw new IllegalArgumentException(String.format("Invalid token in Read Statement: %s", node));
+                throw illegalArgumentException("READ", "Expected a 'VARIABLE' identifier token");
             }
         } while (matchAndRemove(Token.TokenType.COMMA));
         return new ReadNode(variables);
@@ -424,11 +429,17 @@ public class Parser {
      */
     public StatementNode dataStatement() {
         if (!matchAndRemove(Token.TokenType.DATA)) {
-            throw new IllegalArgumentException("Invalid Data Statement");
+            throw illegalArgumentException("DATA", "Expected 'DATA' token");
         }
         List<Node> data = new ArrayList<>();
+        if (!peekAndMatch(Token.TokenType.STRINGLITERAL) && !peekAndMatch(Token.TokenType.NUMBER)) {
+            throw illegalArgumentException("DATA", "Expected one or more 'NUMBER' or 'STRINGLITERAL' tokens");
+        }
         do {
             Node node = factor();
+
+            System.out.println("Node: ");
+            System.out.println(node);
 
             // Unwrap the FactorNode to get the actual inner node
             if (node instanceof FactorNode) {
@@ -437,7 +448,7 @@ public class Parser {
             if (node instanceof IntegerNode || node instanceof FloatNode || node instanceof StringNode) {
                 data.add(node);
             } else {
-                throw new IllegalArgumentException(String.format("Invalid token in Data Statement: %s", node));
+                throw illegalArgumentException("DATA", "Expected a valid Factor");
             }
         } while (matchAndRemove(Token.TokenType.COMMA));
         return new DataNode(data);
@@ -453,7 +464,7 @@ public class Parser {
      */
     public PrintNode printStatement() {
         if (!matchAndRemove(Token.TokenType.PRINT)) {
-            throw new IllegalArgumentException("Invalid Print Statement");
+            throw illegalArgumentException("PRINT", "Expected 'PRINT' token");
         }
         PrintNode printNode = new PrintNode();
 
@@ -483,7 +494,8 @@ public List<Node> printList() {
         if (peekAndMatch(Token.TokenType.COMMA)) {
             matchAndRemove(Token.TokenType.COMMA);
         } else if (!peekAndMatch(Token.TokenType.ENDOFLINE)) {
-            throw new RuntimeException("Expected a comma between expressions");
+            throw illegalArgumentException("PRINT", "Multiple arguments must be comma separated");
+
         }
     }
     return nodes;
@@ -499,10 +511,10 @@ public List<Node> printList() {
      */
     public AssignmentNode assignment() {
         VariableNode variableNode = (VariableNode) factor();
-        if (matchAndRemove(Token.TokenType.EQUALS)) {
-            return new AssignmentNode(variableNode, expression());
+        if (!matchAndRemove(Token.TokenType.EQUALS)) {
+            throw illegalArgumentException("Assignment", "Statements starting with a variable must be in an assignment statement");
         }
-        return null;
+        return new AssignmentNode(variableNode, expression());
     }
 
     /**
@@ -514,8 +526,10 @@ public List<Node> printList() {
      * @return an ExpressionNode
      */
     public Node expression() {
+        System.out.print("Start expression");
         Node term;
         if (peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
+            System.out.print("In expression if");
             term = functionInvocation();
         } else {
             term = term();
@@ -546,19 +560,21 @@ public List<Node> printList() {
      */
     public FunctionNode functionInvocation() {
         if (!peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
-            throw new RuntimeException("Expected valid function name for function invocation");
+            throw illegalArgumentException("BUILTIN FUNCTION", "Unknown built-in function");
         }
         String functionName = tokenManager.matchAndRemove(Token.TokenType.FUNCTIONNAME).get().getVal();
 
+        System.out.println("functionName:");
+        System.out.println(functionName);
         if (!BuiltInFunctions.functionMap.containsKey(functionName)) {
-            throw new IllegalArgumentException(String.format("Unknown built-in function: %s", functionName));
+            throw illegalArgumentException("BUILTIN FUNCTION", "Unknown built-in function");
         }
         if (!matchAndRemove(Token.TokenType.LPAREN)) {
-            throw new IllegalArgumentException("Expected LPAREN token");
+            throw illegalArgumentException("BUILTIN FUNCTION", "Expected 'LPAREN' token");
         }
         List<Node> parameters = parameterList();
         if (!matchAndRemove(Token.TokenType.RPAREN)) {
-            throw new IllegalArgumentException("Expected RPAREN token");
+            throw illegalArgumentException("BUILTIN FUNCTION", "Expected 'RPAREN' token");
         }
         FunctionNode functionNode = new FunctionNode(BuiltInFunctions.functionMap.get(functionName));
         functionNode.setParameters(parameters);
@@ -582,7 +598,9 @@ public List<Node> printList() {
             if (peekAndMatch(Token.TokenType.COMMA)) {
                 matchAndRemove(Token.TokenType.COMMA);
             } else if (!peekAndMatch(Token.TokenType.RPAREN)) {
-                throw new IllegalArgumentException("Expected a comma or RPAREN");
+                throw new IllegalArgumentException(
+                        String.format("Invalid token %s in parameter list expression: Expected a 'COMMA' or 'RPAREN'", peek())
+                );
             }
         }
         return parameters;
@@ -634,7 +652,7 @@ public List<Node> printList() {
         if (matchAndRemove(Token.TokenType.LPAREN)) {
             ExpressionNode innerExpr = (ExpressionNode) expression();
             if (!matchAndRemove(Token.TokenType.RPAREN)) {
-                throw new IllegalArgumentException("Mismatched parentheses");
+                throw illegalArgumentException("FACTOR", "Mismatched parentheses");
             }
 
             if (isNegative) {
@@ -654,7 +672,7 @@ public List<Node> printList() {
 
         Optional<Token> numberTokenOpt = tokenManager.matchAndRemove(Token.TokenType.NUMBER);
         if (numberTokenOpt.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Unexpected end of factor: %s", peek()));
+            throw illegalArgumentException("FACTOR", "Expected a 'NUMBER', 'FUNCTIONNAME', or 'MATHOP' token");
         }
 
         return number(numberTokenOpt.get(), isNegative);
@@ -703,6 +721,12 @@ public List<Node> printList() {
      */
     private Token peek() {
         return tokenManager.peek(0).orElse(null);
+    }
+
+    private IllegalArgumentException illegalArgumentException(String statementType, String message) {
+        return new IllegalArgumentException(
+                String.format("Invalid token %s in '%s' statement: %s", peek(), statementType, message)
+        );
     }
 }
 
