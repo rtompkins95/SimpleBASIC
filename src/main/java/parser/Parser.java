@@ -526,10 +526,8 @@ public List<Node> printList() {
      * @return an ExpressionNode
      */
     public Node expression() {
-        System.out.print("Start expression");
         Node term;
         if (peekAndMatch(Token.TokenType.FUNCTIONNAME)) {
-            System.out.print("In expression if");
             term = functionInvocation();
         } else {
             term = term();
