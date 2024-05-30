@@ -438,9 +438,6 @@ public class Parser {
         do {
             Node node = factor();
 
-            System.out.println("Node: ");
-            System.out.println(node);
-
             // Unwrap the FactorNode to get the actual inner node
             if (node instanceof FactorNode) {
                 node = ((FactorNode) node).getNode();
@@ -562,8 +559,6 @@ public List<Node> printList() {
         }
         String functionName = tokenManager.matchAndRemove(Token.TokenType.FUNCTIONNAME).get().getVal();
 
-        System.out.println("functionName:");
-        System.out.println(functionName);
         if (!BuiltInFunctions.functionMap.containsKey(functionName)) {
             throw illegalArgumentException("BUILTIN FUNCTION", "Unknown built-in function");
         }
