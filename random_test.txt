@@ -1,6 +1,0 @@
-a = RANDOM()
-PRINT a
-PRINT RANDOM(1, 2), ", ", RANDOM(1, 4), ", ", RANDOM(0, 4), ", ",
-b% = RANDOMF(0.1, 0.5)
-PRINT b%
-PRINT RANDOMF(1.0, 2.0), ", ", RANDOMF(1.0, 4.0), ", ", RANDOMF(0.0, 4.0)
