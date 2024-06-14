@@ -11,8 +11,6 @@ import java.util.*;
  */
 public class Basic {
 
-
-
     private static boolean DEBUG = false;
 
     /**
